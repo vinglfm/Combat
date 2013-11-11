@@ -1,0 +1,10 @@
+java-cgdk/.idea/
+java-cgdk/.classpath
+java-cgdk/.project
+java-cgdk/compile-java.bat
+java-cgdk/compile-java.sh
+java-cgdk/java-cgdk.iml
+java-cgdk/make.bat
+.metadata/
+RemoteSystemsTempFiles/
+java-cgdk/out/

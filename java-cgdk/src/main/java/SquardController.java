@@ -25,10 +25,6 @@ public class SquardController {
 		}
 	}
 
-	// public static void updateGoalLocation() {
-	// movementHelper.updateGoalLocation();
-	// }
-
 	public static Direction getDirection(int forTrooper, int xCord, int yCord) {
 		PathHelper pathHelper = pathes.get(forTrooper);
 
@@ -45,7 +41,6 @@ public class SquardController {
 		// TODO: calculate direction base on the pathToTarger +1 or +2 node -
 		// base on the standing, sitting or laying, check if it is needed
 		if (pathHelper.isTargetLocationAchieved()) {
-			System.out.println("UPDATING...");
 			pathes.remove(forTrooper);
 			return Direction.CURRENT_POINT;
 		}
@@ -59,12 +54,6 @@ public class SquardController {
 
 		private PathHelper(List<LocationVertex> path) {
 			this.path = Collections.unmodifiableList(path);
-			for (LocationVertex vertex : path) {
-
-				System.out.print("x = " + vertex.getXCord() + " y = "
-						+ vertex.getYCord() + " |");
-			}
-			System.out.println("...end.");
 		}
 
 		private boolean isTargetLocationAchieved() {
@@ -79,9 +68,6 @@ public class SquardController {
 				LocationVertex nextVertex = path.get(currentPosition);
 
 				int xDif = nextVertex.getXCord() - vertex.getXCord();
-				// System.out.println("nextVertex.getXCord() = " +
-				// nextVertex.getXCord() + " vertex.getXCord() = " +
-				// vertex.getXCord());
 				switch (xDif) {
 				case -1:
 					return Direction.WEST;
@@ -89,9 +75,6 @@ public class SquardController {
 					return Direction.EAST;
 				case 0: {
 					int yDif = nextVertex.getYCord() - vertex.getYCord();
-					// System.out.println(" nextVertex.getYCord() = " +
-					// nextVertex.getYCord() + " vertex.getYCord() = " +
-					// vertex.getYCord());
 					switch (yDif) {
 					case -1:
 						return Direction.NORTH;
@@ -100,12 +83,10 @@ public class SquardController {
 					case 0:
 						return Direction.CURRENT_POINT;
 					default:
-						System.out.println("yDif = " + yDif);
 						throw new LogicError();
 					}
 				}
 				default:
-					System.out.println("xDif = " + xDif);
 					throw new LogicError();
 				}
 			}
@@ -123,13 +104,19 @@ public class SquardController {
 
 		MovementHelper(CellType[][] cells) {
 
+			buildGraph(cells);
+
+			keys = new ArrayList<>(vertexes.size());
+			for (Integer value : vertexes.keySet()) {
+				keys.add(value);
+			}
+		}
+
+		private void buildGraph(CellType[][] cells) {
 			Integer index;
 			LocationVertex vertex;
 			for (int i = 0; i < cells.length; ++i) {
 				for (int j = 0; j < cells[i].length; ++j) {
-					if(i == 29 && j == 18) {
-						System.out.print("s");
-					}
 					if (cells[i][j] == CellType.FREE) {
 						index = j * OFFSET + i;
 						vertex = vertexes.get(index);
@@ -140,11 +127,6 @@ public class SquardController {
 						addNearests(vertex, i, j, cells);
 					}
 				}
-			}
-
-			keys = new ArrayList<>(vertexes.size());
-			for (Integer value : vertexes.keySet()) {
-				keys.add(value);
 			}
 		}
 
@@ -209,8 +191,8 @@ public class SquardController {
 
 		private void updateGoalLocation() {
 			int pos = rand.nextInt(keys.size());
-			
-			targetLocation = vertexes.get(0);//keys.get(pos));
+
+			targetLocation = vertexes.get(keys.get(pos));
 		}
 
 		private List<LocationVertex> path(LocationVertex from, LocationVertex to) {

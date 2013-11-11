@@ -21,15 +21,6 @@ abstract class BaseLogic {
 		action(self, world, game, move);
 
 		move(self, world, game, move);
-		// move.setAction(ActionType.MOVE);
-		//
-		// if (random.nextBoolean()) {
-		// move.setDirection(random.nextBoolean() ? Direction.NORTH :
-		// Direction.SOUTH);
-		// } else {
-		// move.setDirection(random.nextBoolean() ? Direction.WEST :
-		// Direction.EAST);
-		// }
 	}
 
 	private int getMoveCost(TrooperStance trooperStance, Game game) {
