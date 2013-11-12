@@ -22,24 +22,23 @@ public class ActionHelper {
             }
 
         }
-        if(weakestTroop == null){
+        if (weakestTroop == null) {
             return false;
         }
 
-        if (self.getDistanceTo(weakestTroop) > 1) {        //TODO go to the trooper
+        if (self.getDistanceTo(weakestTroop) > 1 && self.getActionPoints() > getMoveCost(self.getStance(),game)) {        //TODO go to the trooper
+
             move.setAction(ActionType.MOVE);
             move.setX(weakestTroop.getX());
             move.setY(weakestTroop.getY());
             return true;
-        }
-
-        else {
+        } else if(self.getDistanceTo(weakestTroop) <= 1) {
             move.setAction(ActionType.HEAL);
             move.setX(weakestTroop.getX());
             move.setY(weakestTroop.getY());
             return true;
         }
-
+           return  false;
 
     }
 
@@ -48,25 +47,26 @@ public class ActionHelper {
         if (isShotWillDeny(game, world, self, move)) {
             return true;
         }
+        if (self.getActionPoints() > self.getShootCost()) {
+            Trooper weakestEnemy = null;
+            for (Trooper enemy : getNearestEnemies(world)) {
 
-        Trooper weakestEnemy = null;
-        for (Trooper enemy : getNearestEnemies(world)) {
-
-            if (canAttack(self, enemy, world)) {
-                if (weakestEnemy == null) {
-                    weakestEnemy = enemy;
-                }
-                if (weakestEnemy.getHitpoints() > enemy.getHitpoints()) {
-                    weakestEnemy = enemy;
+                if (canAttack(self, enemy, world)) {
+                    if (weakestEnemy == null) {
+                        weakestEnemy = enemy;
+                    }
+                    if (weakestEnemy.getHitpoints() > enemy.getHitpoints()) {
+                        weakestEnemy = enemy;
+                    }
                 }
             }
-        }
 
-        if (weakestEnemy != null) {
-            move.setAction(ActionType.SHOOT);
-            move.setX(weakestEnemy.getX());
-            move.setY(weakestEnemy.getY());
-            return true;
+            if (weakestEnemy != null) {
+                move.setAction(ActionType.SHOOT);
+                move.setX(weakestEnemy.getX());
+                move.setY(weakestEnemy.getY());
+                return true;
+            }
         }
 
         return false;
@@ -101,11 +101,30 @@ public class ActionHelper {
     private static boolean canAttack(Trooper self, Trooper enemy, World world) {
 
         if (world.isVisible(self.getVisionRange(), self.getX(), self.getY(), self.getStance(), enemy.getX(), enemy.getY(), enemy.getStance())
-                &&self.getDistanceTo(enemy)< self.getShootingRange()) {
+                && self.getDistanceTo(enemy) < self.getShootingRange()) {
             return true;
         }
 
         return false;
 
+    }
+    public static int getMoveCost(TrooperStance trooperStance, Game game) {
+        int moveCost = -1;
+
+        switch (trooperStance) {
+            case PRONE:
+                moveCost = game.getProneMoveCost();
+                break;
+            case KNEELING:
+                moveCost = game.getKneelingMoveCost();
+                break;
+            case STANDING:
+                moveCost = game.getStandingMoveCost();
+                break;
+            default:
+                throw new LogicError();
+        }
+
+        return moveCost;
     }
 }

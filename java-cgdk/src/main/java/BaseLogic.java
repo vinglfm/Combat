@@ -11,7 +11,7 @@ abstract class BaseLogic {
 
     final void movement(Trooper self, World world, Game game, Move move) {
         TrooperStance trooperStance = self.getStance();
-        int moveCost = getMoveCost(trooperStance, game);
+        int moveCost = ActionHelper.getMoveCost(trooperStance, game);
 
         if (self.getActionPoints() < moveCost) {
             move.setAction(ActionType.END_TURN);
@@ -25,29 +25,15 @@ abstract class BaseLogic {
 
     }
 
-    private int getMoveCost(TrooperStance trooperStance, Game game) {
-        int moveCost = -1;
 
-        switch (trooperStance) {
-            case PRONE:
-                moveCost = game.getProneMoveCost();
-                break;
-            case KNEELING:
-                moveCost = game.getKneelingMoveCost();
-                break;
-            case STANDING:
-                moveCost = game.getStandingMoveCost();
-                break;
-            default:
-                throw new LogicError();
-        }
-
-        return moveCost;
-    }
 
     protected void move(Trooper self, World world, Game game, Move move) {
         Direction dir = SquardController.getDirection(self.getTeammateIndex(), self.getX(), self.getY());
-        move.setDirection(dir);
+        if(dir.equals(Direction.CURRENT_POINT)){
+            move.setDirection(Direction.WEST);
+        } else {
+            move.setDirection(dir);
+        }
         move.setAction(ActionType.MOVE);
     }
 
