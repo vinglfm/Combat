@@ -10,7 +10,9 @@ public final class SoldierLogic extends BaseLogic {
         if(ActionHelper.isNeedAttack(game,world,self,move)){
             return;
         }
-        move(self,world,game,move);
+        else{
+            move(self,world,game,move) ;
+        };
 
     }
 

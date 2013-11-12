@@ -17,8 +17,9 @@ public final class FieldMedicLogic extends BaseLogic {
         else if(ActionHelper.isNeedAttack(game, world, self , move)){
             return;
         }
-        move(self,world, game, move);
-
+        else {
+            move(self,world, game, move);
+        }
     }
 
 

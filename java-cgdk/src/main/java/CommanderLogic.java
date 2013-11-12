@@ -11,7 +11,9 @@ public final class CommanderLogic extends BaseLogic {
            if(ActionHelper.isNeedAttack(game,world,self,move)){
                 return;
            }
-           move(self,world,game,move);
+           else {
+               move(self,world,game,move);
+           }
 
     }
 

@@ -14,6 +14,7 @@ abstract class BaseLogic {
         int moveCost = getMoveCost(trooperStance, game);
 
         if (self.getActionPoints() < moveCost) {
+            move.setAction(ActionType.END_TURN);
             return;
         }
 
