@@ -62,6 +62,9 @@ public class ActionHelper {
             }
 
             if (weakestEnemy != null) {
+                if (isNeedThrowGrenade(game, world,self,move,weakestEnemy)){
+                    return true;
+                }
                 move.setAction(ActionType.SHOOT);
                 move.setX(weakestEnemy.getX());
                 move.setY(weakestEnemy.getY());
@@ -87,8 +90,29 @@ public class ActionHelper {
         return false;
     }
 
+    public static boolean isNeedThrowGrenade(Game game, World world, Trooper self, Move move, Trooper enemy){
+         if(self.getActionPoints()> game.getGrenadeThrowCost()) {
+                if(self.isHoldingGrenade() && world.isVisible(self.getVisionRange(), self.getX(), self.getY(), self.getStance(), enemy.getX(), enemy.getY(), enemy.getStance())
+                        && self.getDistanceTo(enemy) < game.getGrenadeThrowRange()) {
 
-    public static List<Trooper> getNearestEnemies(World world) {
+                    move.setAction(ActionType.THROW_GRENADE);
+                    move.setX(enemy.getX());
+                    move.setY(enemy.getY());
+                    return true;
+                }
+                else if(self.isHoldingGrenade() && world.isVisible(self.getVisionRange(), self.getX(), self.getY(), self.getStance(), enemy.getX(), enemy.getY(), enemy.getStance())
+                     && (self.getDistanceTo(enemy) - game.getGrenadeThrowRange()) == 1 && (getMoveCost(self.getStance(),game) +  game.getGrenadeThrowCost() == 10)) {
+                    move.setAction(ActionType.MOVE);
+                    move.setX(enemy.getX());
+                    move.setY(enemy.getY());
+                    return  true;
+                }
+
+         }
+           return  false;
+    }
+
+    private static List<Trooper> getNearestEnemies(World world) {
         List<Trooper> enemyList = new ArrayList<>();
         for (Trooper trooper : world.getTroopers()) {
             if (!trooper.isTeammate()) {
@@ -97,6 +121,7 @@ public class ActionHelper {
         }
         return enemyList;
     }
+
 
     private static boolean canAttack(Trooper self, Trooper enemy, World world) {
 
@@ -127,4 +152,7 @@ public class ActionHelper {
 
         return moveCost;
     }
+
+
+
 }
