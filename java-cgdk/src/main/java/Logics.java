@@ -4,27 +4,27 @@ import java.util.Map;
 import model.TrooperType;
 
 enum Logics {
-	COMMANDER(TrooperType.COMMANDER, new CommanderLogic()), FIELD_MEDIC(TrooperType.FIELD_MEDIC, new FieldMedicLogic()), SOLDIER(
-			TrooperType.SOLDIER, new SoldierLogic()), SNIPER(TrooperType.SNIPER, new SniperLogic()), SCOUT(TrooperType.SCOUT,
-			new ScoutLogic());
-	
-	private static Map<TrooperType, BaseLogic> logics = new HashMap<>();
-	
-	static {
-		for(Logics singleLogic : Logics.values())
-			logics.put(singleLogic.trooperType, singleLogic.logic);
-	}
+    COMMANDER(TrooperType.COMMANDER, new CommanderLogic()), FIELD_MEDIC(TrooperType.FIELD_MEDIC, new FieldMedicLogic()), SOLDIER(
+            TrooperType.SOLDIER, new SoldierLogic()), SNIPER(TrooperType.SNIPER, new SniperLogic()), SCOUT(TrooperType.SCOUT,
+            new ScoutLogic());
 
-	TrooperType trooperType;
-	BaseLogic logic;
+    private static Map<TrooperType, BaseLogic> logics = new HashMap<>();
 
-	Logics(TrooperType trooperType, BaseLogic logic) {
-		this.trooperType = trooperType;
-		this.logic = logic;
-	}
+    static {
+        for (Logics singleLogic : Logics.values())
+            logics.put(singleLogic.trooperType, singleLogic.logic);
+    }
 
-	public static BaseLogic getLogicByType(TrooperType type) {
-		return logics.get(type);
-	}
+    TrooperType trooperType;
+    BaseLogic logic;
+
+    Logics(TrooperType trooperType, BaseLogic logic) {
+        this.trooperType = trooperType;
+        this.logic = logic;
+    }
+
+    public static BaseLogic getLogicByType(TrooperType type) {
+        return logics.get(type);
+    }
 
 }

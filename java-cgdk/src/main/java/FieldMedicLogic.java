@@ -1,16 +1,26 @@
-import model.Game;
-import model.Move;
-import model.Trooper;
-import model.World;
+import model.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public final class FieldMedicLogic extends BaseLogic {
 
-	@Override
-	public void action(Trooper self, World world, Game game, Move move) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void action(Trooper self, World world, Game game, Move move) {
+        if(ActionHelper.isShotWillDeny(game, world,self,move)){
+            return;
+        }
+        else if(ActionHelper.isNeedHeal(game, world, self , move)){
+            return;
+        }
+        else if(ActionHelper.isNeedAttack(game, world, self , move)){
+            return;
+        }
+        move(self,world, game, move);
+
+    }
+
 
 
 }

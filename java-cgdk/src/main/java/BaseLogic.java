@@ -8,47 +8,48 @@ import model.World;
 
 abstract class BaseLogic {
 
-	final void movement(Trooper self, World world, Game game, Move move) {
-		TrooperStance trooperStance = self.getStance();
-		int moveCost = getMoveCost(trooperStance, game);
 
-		if (self.getActionPoints() < moveCost) {
-			return;
-		}
+    final void movement(Trooper self, World world, Game game, Move move) {
+        TrooperStance trooperStance = self.getStance();
+        int moveCost = getMoveCost(trooperStance, game);
 
-		// TODO: logic for checking nearest enemies, health of the comrades,
-		// etc.
-		action(self, world, game, move);
+        if (self.getActionPoints() < moveCost) {
+            return;
+        }
 
-		move(self, world, game, move);
-	}
+        // TODO: logic for checking nearest enemies, health of the comrades,
+        // etc.
+        action(self, world, game, move);
 
-	private int getMoveCost(TrooperStance trooperStance, Game game) {
-		int moveCost = -1;
 
-		switch (trooperStance) {
-		case PRONE:
-			moveCost = game.getProneMoveCost();
-			break;
-		case KNEELING:
-			moveCost = game.getKneelingMoveCost();
-			break;
-		case STANDING:
-			moveCost = game.getStandingMoveCost();
-			break;
-		default:
-			throw new LogicError();
-		}
+    }
 
-		return moveCost;
-	}
+    private int getMoveCost(TrooperStance trooperStance, Game game) {
+        int moveCost = -1;
 
-	private void move(Trooper self, World world, Game game, Move move) {
-		Direction dir = SquardController.getDirection(self.getTeammateIndex(), self.getX(),  self.getY());
-		move.setDirection(dir);
-		move.setAction(ActionType.MOVE);
-	}
+        switch (trooperStance) {
+            case PRONE:
+                moveCost = game.getProneMoveCost();
+                break;
+            case KNEELING:
+                moveCost = game.getKneelingMoveCost();
+                break;
+            case STANDING:
+                moveCost = game.getStandingMoveCost();
+                break;
+            default:
+                throw new LogicError();
+        }
 
-	protected abstract void action(Trooper self, World world, Game game,
-			Move move);
+        return moveCost;
+    }
+
+    protected void move(Trooper self, World world, Game game, Move move) {
+        Direction dir = SquardController.getDirection(self.getTeammateIndex(), self.getX(), self.getY());
+        move.setDirection(dir);
+        move.setAction(ActionType.MOVE);
+    }
+
+    protected abstract void action(Trooper self, World world, Game game,
+                                   Move move);
 }
