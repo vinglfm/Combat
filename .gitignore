@@ -7,4 +7,8 @@ java-cgdk/java-cgdk.iml
 java-cgdk/make.bat
 .metadata/
 RemoteSystemsTempFiles/
-java-cgdk/out/
+java-cgdk/out/production/
+java-cgdk/target/
+local-runner/
+repeater/
+main.iml
