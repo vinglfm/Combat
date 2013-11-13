@@ -18,8 +18,6 @@ abstract class BaseLogic {
             return;
         }
 
-        // TODO: logic for checking nearest enemies, health of the comrades,
-        // etc.
         action(self, world, game, move);
 
 

@@ -28,20 +28,18 @@ public class SquardController {
 	public static Direction getDirection(int forTrooper, int xCord, int yCord) {
 		PathHelper pathHelper = pathes.get(forTrooper);
 
+
 		if (pathHelper == null) {
 			List<LocationVertex> pathToTarget = movementHelper.updatePath(
 					xCord, yCord);
 			pathHelper = new PathHelper(pathToTarget);
 			pathes.put(forTrooper, pathHelper);
-
 		}
 
-		// TODO: check if we at the end of the path, if so - return
-		// CURRENT_NODE, etc.
-		// TODO: calculate direction base on the pathToTarger +1 or +2 node -
-		// base on the standing, sitting or laying, check if it is needed
 		if (pathHelper.isTargetLocationAchieved()) {
-			pathes.remove(forTrooper);
+            pathes.clear();
+            movementHelper.updateGoalLocation();
+
 			return Direction.CURRENT_POINT;
 		}
 
