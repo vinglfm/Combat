@@ -222,8 +222,8 @@ public class ActionHelper {
     }
     private static Direction getDirection(World world, Trooper self, int destinationX, int destinationY){
             SquardController.init(world);
-            SquardController.getDirection(self.getId(), destinationX,destinationY);
-
+            //SquardController.getDirection(self.getId(), destinationX,destinationY);
+           return  null;
 
    }
 
