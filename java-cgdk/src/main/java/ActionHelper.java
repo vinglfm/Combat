@@ -51,16 +51,16 @@ public class ActionHelper {
         if (self.isHoldingMedikit() && self.getActionPoints() > game.getMedikitUseCost()) {
             Trooper weakestTroop = null;
 
-                for (Trooper trooper : world.getTroopers()) {
-                    if (trooper.isTeammate() && (trooper.getMaximalHitpoints() - trooper.getHitpoints() > game.getMedikitHealSelfBonusHitpoints())) {       //TODO if current HP is not full
-                        if (weakestTroop == null) {
-                            weakestTroop = trooper;
-                        }
-                        if (self.getDistanceTo(trooper) < self.getDistanceTo(weakestTroop)) {
-                            weakestTroop = trooper;
-                        }                                 // TODO need to check path instead distance
+            for (Trooper trooper : world.getTroopers()) {
+                if (trooper.isTeammate() && (trooper.getMaximalHitpoints() - trooper.getHitpoints() > game.getMedikitHealSelfBonusHitpoints())) {       //TODO if current HP is not full
+                    if (weakestTroop == null) {
+                        weakestTroop = trooper;
                     }
+                    if (self.getDistanceTo(trooper) < self.getDistanceTo(weakestTroop)) {
+                        weakestTroop = trooper;
+                    }                                 // TODO need to check path instead distance
                 }
+            }
 
 
             if (weakestTroop == null) {
@@ -215,30 +215,47 @@ public class ActionHelper {
         return moveCost;
     }
 
-    public static boolean isNeedGetBack(){
-        return false;
 
+
+    private static Direction getDirection(World world, Trooper self, int destinationX, int destinationY) {      //TODO Andrew implement it
+        SquardController.init(world);
+        //SquardController.getDirection(self.getId(), destinationX,destinationY);
+        return null;
 
     }
-    private static Direction getDirection(World world, Trooper self, int destinationX, int destinationY){      //TODO Anrew implement it
-            SquardController.init(world);
-            //SquardController.getDirection(self.getId(), destinationX,destinationY);
-           return  null;
 
-   }
-
-   private static boolean isNeedToHide(Game game, World world, Trooper self, Move move){     //TODO Anrew implement it. This method must find nearest safe place
-        if(!getNearestEnemies(world).isEmpty()){
+    private static boolean isNeedToHide(Game game, World world, Trooper self, Move move) {     //TODO Andrew implement it. This method must find nearest safe place in some cases ( end turn or too many enemy around)
+        if (!getNearestEnemies(world).isEmpty()) {
             CellType[][] cells = world.getCells();
             for (int i = 0; i < cells.length; ++i) {
                 for (int j = 0; j < cells[i].length; ++j) {
                     //if (cells[i][j] == CellType.FREE && self.getDistanceTo().) {
 
-                    }
                 }
             }
+        }
 
-       return false;
+        return false;
 
-   }
+    }
+
+    public static boolean isNeedToGetBonus(Game game, World world, Trooper self, Move move) {  //TODO  need logic to finding nearest bonuses
+        return false;
+    }
+
+    public static boolean isNeedToChangeState() {
+        return false;
+    }
+
+    public static boolean isNeedToCallAirSupport(Game game, World world, Trooper self, Move move) {
+
+        return false;
+
+    }
+    public static boolean isNeedGetBack() {
+        return false;
+
+
+    }
+
 }
