@@ -220,11 +220,25 @@ public class ActionHelper {
 
 
     }
-    private static Direction getDirection(World world, Trooper self, int destinationX, int destinationY){
+    private static Direction getDirection(World world, Trooper self, int destinationX, int destinationY){      //TODO Anrew implement it
             SquardController.init(world);
             //SquardController.getDirection(self.getId(), destinationX,destinationY);
            return  null;
 
    }
 
+   private static boolean isNeedToHide(Game game, World world, Trooper self, Move move){     //TODO Anrew implement it. This method must find nearest safe place
+        if(!getNearestEnemies(world).isEmpty()){
+            CellType[][] cells = world.getCells();
+            for (int i = 0; i < cells.length; ++i) {
+                for (int j = 0; j < cells[i].length; ++j) {
+                    //if (cells[i][j] == CellType.FREE && self.getDistanceTo().) {
+
+                    }
+                }
+            }
+
+       return false;
+
+   }
 }
