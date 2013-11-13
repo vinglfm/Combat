@@ -26,15 +26,17 @@ abstract class BaseLogic {
     }
 
 
-
     protected void move(Trooper self, World world, Game game, Move move) {
         Direction dir = SquardController.getDirection(self.getTeammateIndex(), self.getX(), self.getY());
-        if(dir.equals(Direction.CURRENT_POINT)){
-            move.setDirection(Direction.WEST);
+        if (dir.equals(Direction.CURRENT_POINT)) {
+            if (self.getActionPoints() > game.getStanceChangeCost()) {
+                move.setAction(ActionType.LOWER_STANCE);
+            }
         } else {
             move.setDirection(dir);
+            move.setAction(ActionType.MOVE);
         }
-        move.setAction(ActionType.MOVE);
+
     }
 
     protected abstract void action(Trooper self, World world, Game game,
