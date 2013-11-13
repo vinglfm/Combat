@@ -216,12 +216,8 @@ public class ActionHelper {
     }
 
 
-
-    private static Direction getDirection(World world, Trooper self, int destinationX, int destinationY) {      //TODO Andrew implement it
-        SquardController.init(world);
-        //SquardController.getDirection(self.getId(), destinationX,destinationY);
-        return null;
-
+    private static void updateExtremePath(int destinationX, int destinationY) {
+        SquardController.setFightGoalLocation(destinationX, destinationY);
     }
 
     private static boolean isNeedToHide(Game game, World world, Trooper self, Move move) {     //TODO Andrew implement it. This method must find nearest safe place in some cases ( end turn or too many enemy around)

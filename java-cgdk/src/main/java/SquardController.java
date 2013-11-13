@@ -8,6 +8,7 @@ import java.util.Random;
 
 import model.CellType;
 import model.Direction;
+import model.Trooper;
 import model.World;
 
 public class SquardController {
@@ -26,9 +27,8 @@ public class SquardController {
 	}
 
 	public static Direction getDirection(int forTrooper, int xCord, int yCord) {
+
 		PathHelper pathHelper = pathes.get(forTrooper);
-
-
 		if (pathHelper == null) {
 			List<LocationVertex> pathToTarget = movementHelper.updatePath(
 					xCord, yCord);
@@ -39,12 +39,18 @@ public class SquardController {
 		if (pathHelper.isTargetLocationAchieved()) {
             pathes.clear();
             movementHelper.updateGoalLocation();
-
 			return Direction.CURRENT_POINT;
 		}
 
 		return pathHelper.getDirection();
 	}
+
+
+
+    public static void setFightGoalLocation(int destinationX, int destinationY) {
+        movementHelper.updateGoalLocation(destinationX, destinationY);
+        pathes.clear();
+    }
 
 	private static final class PathHelper {
 		private int currentPosition;
@@ -193,7 +199,18 @@ public class SquardController {
 			targetLocation = vertexes.get(keys.get(pos));
 		}
 
-		private List<LocationVertex> path(LocationVertex from, LocationVertex to) {
+
+        private void updateGoalLocation(int destinationX, int destinationY) {
+            LocationVertex newGoalLocation = fromLocation(destinationX, destinationY);
+
+            if(newGoalLocation == null)
+                throw new LogicError();
+
+            targetLocation = newGoalLocation;
+        }
+
+
+        private List<LocationVertex> path(LocationVertex from, LocationVertex to) {
 
 			LocationVertex vertex = from;
 			beforePathCalculation(vertex);
@@ -243,7 +260,6 @@ public class SquardController {
 				vertex.setWeight(Integer.MAX_VALUE);
 			}
 		}
-
-	}
+    }
 
 }
