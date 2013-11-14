@@ -181,7 +181,6 @@ public class ActionHelper extends BaseActionHelper {
         return moveCost;
     }
 
-
     public static boolean isNeedToHide(Game game, World world, Trooper self, Move move) {
        /* if (self.getActionPoints() >= game.getStanceChangeCost()) {                                 //TODO worked incorrect
             for (Trooper enemy : getNearestEnemies(world)) {
