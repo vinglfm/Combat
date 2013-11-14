@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * (c) Author LostSoul
  */
-public class ActionHelper extends BaseActionHelper{
+public class ActionHelper extends BaseActionHelper {
 
 
     static public boolean isNeedHeal(Game game, World world, Trooper self, Move move) {
@@ -161,11 +161,6 @@ public class ActionHelper extends BaseActionHelper{
     }
 
 
-
-
-
-
-
     public static int getMoveCost(TrooperStance trooperStance, Game game) {
         int moveCost = -1;
 
@@ -185,7 +180,6 @@ public class ActionHelper extends BaseActionHelper{
 
         return moveCost;
     }
-
 
 
     public static boolean isNeedToHide(Game game, World world, Trooper self, Move move) {
@@ -221,6 +215,39 @@ public class ActionHelper extends BaseActionHelper{
     }
 
     public static boolean isNeedToGetBonus(Game game, World world, Trooper self, Move move) {  //TODO  need logic to finding nearest bonuses
+        if (self.getActionPoints() > getMoveCost(self.getStance(), game)) {
+
+            for (Bonus bonus : world.getBonuses()) {
+                if (bonus.getDistanceTo(self) < 2) {
+                    if ((self.getX() + 1 == bonus.getX() && self.getY() == bonus.getY())) {
+                        move.setAction(ActionType.MOVE);
+                        move.setX(bonus.getX());
+                        move.setY(bonus.getY());
+                        return true;
+                    } else if (self.getX() - 1 == bonus.getX() && self.getY() == bonus.getY()) {
+                        move.setAction(ActionType.MOVE);
+                        move.setX(bonus.getX());
+                        move.setY(bonus.getY());
+                        return true;
+                    } else if (self.getX() == bonus.getX() && self.getY() + 1 == bonus.getY()) {
+                        move.setAction(ActionType.MOVE);
+                        move.setX(bonus.getX());
+                        move.setY(bonus.getY());
+                        return true;
+                    } else if (self.getX() == bonus.getX() && self.getY() - 1 == bonus.getY()) {
+                        move.setAction(ActionType.MOVE);
+                        move.setX(bonus.getX());
+                        move.setY(bonus.getY());
+                        return true;
+                    }
+                }
+
+
+            }
+
+
+        }
+
         return false;
     }
 
@@ -231,15 +258,14 @@ public class ActionHelper extends BaseActionHelper{
             for (Trooper enemy : getNearestEnemies(world)) {
                 if (isNeedAttack(game, world, self, move) && self.getStance().equals(TrooperStance.STANDING)) {
                     if (self.getType().equals(TrooperType.SOLDIER) && isChangingStanceProper(game, world, self, move, enemy, TrooperStance.KNEELING) && (self.getActionPoints() == self.getInitialActionPoints())) {                //if after lowering stance our damage will increase
-                         move.setAction(ActionType.LOWER_STANCE);
+                        move.setAction(ActionType.LOWER_STANCE);
                         move.setDirection(Direction.CURRENT_POINT);
                         return true;
                     }
 
 
                 }
-                if (isNeedAttack(game, world, self, move) && self.getStance().equals(TrooperStance.KNEELING) && (self.getActionPoints() == self.getInitialActionPoints()))
-                {
+                if (isNeedAttack(game, world, self, move) && self.getStance().equals(TrooperStance.KNEELING) && (self.getActionPoints() == self.getInitialActionPoints())) {
                     //if after lowering stance our damage will increase
                     if (self.getType().equals(TrooperType.SOLDIER) && isChangingStanceProper(game, world, self, move, enemy, TrooperStance.PRONE)) {
                         move.setAction(ActionType.LOWER_STANCE);
@@ -269,11 +295,11 @@ public class ActionHelper extends BaseActionHelper{
                     return true;
                 }
             }
-             if(getNearestEnemies(world).isEmpty()&& !self.getStance().equals(TrooperStance.STANDING)){
-                 move.setAction(ActionType.RAISE_STANCE);
-                 move.setDirection(Direction.CURRENT_POINT);
-                 return true;
-             }
+            if (getNearestEnemies(world).isEmpty() && !self.getStance().equals(TrooperStance.STANDING)) {
+                move.setAction(ActionType.RAISE_STANCE);
+                move.setDirection(Direction.CURRENT_POINT);
+                return true;
+            }
         }
 
 
@@ -286,13 +312,19 @@ public class ActionHelper extends BaseActionHelper{
 
     }
 
-    public static boolean isNeedGetBack() {
+    public static boolean isNeedGetBack(Game game, World world, Trooper self, Move move) {
+
+        if (self.getActionPoints() >= getMoveCost(self.getStance(), game)) {
+
+
+            return true;
+
+
+        }
         return false;
 
 
     }
-
-
 
 
 }
