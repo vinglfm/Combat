@@ -217,23 +217,24 @@ public class ActionHelper extends BaseActionHelper {
         if (self.getActionPoints() > getMoveCost(self.getStance(), game)) {
 
             for (Bonus bonus : world.getBonuses()) {
-                if (bonus.getDistanceTo(self) < 2) {
-                    if ((self.getX() + 1 == bonus.getX() && self.getY() == bonus.getY())) {
+                if (bonus.getDistanceTo(self) < 2 && !isHoldingBonus(self,bonus)) {
+                    if ((self.getX() + 1 == bonus.getX() && self.getY() == bonus.getY())  ) {
+
                         move.setAction(ActionType.MOVE);
                         move.setX(bonus.getX());
                         move.setY(bonus.getY());
                         return true;
-                    } else if (self.getX() - 1 == bonus.getX() && self.getY() == bonus.getY()) {
+                    } else if (self.getX() - 1 == bonus.getX() && self.getY() == bonus.getY()&& !isHoldingBonus(self,bonus)) {
                         move.setAction(ActionType.MOVE);
                         move.setX(bonus.getX());
                         move.setY(bonus.getY());
                         return true;
-                    } else if (self.getX() == bonus.getX() && self.getY() + 1 == bonus.getY()) {
+                    } else if (self.getX() == bonus.getX() && self.getY() + 1 == bonus.getY()&& !isHoldingBonus(self,bonus)) {
                         move.setAction(ActionType.MOVE);
                         move.setX(bonus.getX());
                         move.setY(bonus.getY());
                         return true;
-                    } else if (self.getX() == bonus.getX() && self.getY() - 1 == bonus.getY()) {
+                    } else if (self.getX() == bonus.getX() && self.getY() - 1 == bonus.getY()&& !isHoldingBonus(self,bonus)) {
                         move.setAction(ActionType.MOVE);
                         move.setX(bonus.getX());
                         move.setY(bonus.getY());

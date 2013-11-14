@@ -17,6 +17,7 @@ public class BaseActionHelper {
         return false;
 
     }
+
     protected static boolean isNeedEat(Game game, World world, Trooper self, Move move) {
         if (self.isHoldingFieldRation() && self.getActionPoints() > game.getFieldRationEatCost()) {
             if (self.getActionPoints() < self.getInitialActionPoints()) {
@@ -40,6 +41,7 @@ public class BaseActionHelper {
 
         return true;
     }
+
     protected static List<Trooper> getNearestEnemies(World world) {
         List<Trooper> enemyList = new ArrayList<>();
         for (Trooper trooper : world.getTroopers()) {
@@ -50,4 +52,22 @@ public class BaseActionHelper {
         return enemyList;
     }
 
+    protected static boolean isHoldingBonus(Trooper self, Bonus bonus){
+        if (bonus.getType().equals(BonusType.FIELD_RATION) && self.isHoldingFieldRation()){
+            return true;
+
+        }
+        else  if (bonus.getType().equals(BonusType.MEDIKIT) && self.isHoldingMedikit()){
+            return true;
+
+        }
+        else if (bonus.getType().equals(BonusType.GRENADE) && self.isHoldingGrenade()){
+            return true;
+
+        }
+        return false;
+
+
+
+    }
 }
