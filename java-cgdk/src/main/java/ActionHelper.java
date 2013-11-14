@@ -85,7 +85,7 @@ public class ActionHelper {
         if (isShotWillDeny(game, world, self, move)) {
             return true;
         }
-        if (self.getActionPoints() > self.getShootCost()) {
+        if (self.getActionPoints() >= self.getShootCost()) {
             Trooper weakestEnemy = null;
             for (Trooper enemy : getNearestEnemies(world)) {
 
@@ -107,6 +107,7 @@ public class ActionHelper {
                     return true;
                 }
 
+
                 move.setAction(ActionType.SHOOT);
                 move.setX(weakestEnemy.getX());
                 move.setY(weakestEnemy.getY());
@@ -119,7 +120,7 @@ public class ActionHelper {
 
 
     static public boolean isShotWillDeny(Game game, World world, Trooper self, Move move) {
-        if (self.getActionPoints() > self.getShootCost())
+        if (self.getActionPoints() >= self.getShootCost())
             for (Trooper enemy : getNearestEnemies(world)) {
                 if (enemy.getHitpoints() < self.getDamage() && canAttack(self, enemy, world)) {
                     move.setAction(ActionType.SHOOT);
@@ -133,7 +134,7 @@ public class ActionHelper {
     }
 
     public static boolean isNeedThrowGrenade(Game game, World world, Trooper self, Move move, Trooper enemy) {
-        if (self.getActionPoints() > game.getGrenadeThrowCost()) {
+        if (self.getActionPoints() >= game.getGrenadeThrowCost()) {
             if (self.isHoldingGrenade() && world.isVisible(self.getVisionRange(), self.getX(), self.getY(), self.getStance(), enemy.getX(), enemy.getY(), enemy.getStance())
                     && self.getDistanceTo(enemy) < game.getGrenadeThrowRange()) {
 
@@ -184,10 +185,10 @@ public class ActionHelper {
 
     private static boolean isNeedEat(Game game, World world, Trooper self, Move move) {
         if (self.isHoldingFieldRation() && self.getActionPoints() > game.getFieldRationEatCost()) {
-            if (self.getActionPoints() > self.getInitialActionPoints()) {
+            if (self.getActionPoints() < self.getInitialActionPoints()) {
                 move.setAction(ActionType.EAT_FIELD_RATION);
                 move.setDirection(Direction.CURRENT_POINT);
-                return true;
+                 return true;
             }
 
 
@@ -220,16 +221,33 @@ public class ActionHelper {
         SquardController.setFightGoalLocation(destinationX, destinationY);
     }
 
-    private static boolean isNeedToHide(Game game, World world, Trooper self, Move move) {     //TODO Andrew implement it. This method must find nearest safe place in some cases ( end turn or too many enemy around)
-        if (!getNearestEnemies(world).isEmpty()) {
-            CellType[][] cells = world.getCells();
-            for (int i = 0; i < cells.length; ++i) {
-                for (int j = 0; j < cells[i].length; ++j) {
-                    //if (cells[i][j] == CellType.FREE && self.getDistanceTo().) {
+    public static boolean isNeedToHide(Game game, World world, Trooper self, Move move) {
+       /* if (self.getActionPoints() >= game.getStanceChangeCost()) {                                 //TODO worked incorrect
+            for (Trooper enemy : getNearestEnemies(world)) {
 
+                if (world.isVisible(enemy.getVisionRange(), enemy.getX(), enemy.getY(), self.getStance(), self.getX(), self.getY(), self.getStance())) {                //If exists better position
+                    if (!world.isVisible(enemy.getVisionRange(), enemy.getX(), enemy.getY(), self.getStance(), self.getX(), self.getY(), TrooperStance.KNEELING) &&
+                            (world.isVisible(self.getVisionRange(), self.getX(), self.getY(), TrooperStance.KNEELING, enemy.getX(), enemy.getY(), enemy.getStance()))) {
+                        move.setAction(ActionType.LOWER_STANCE);
+                        move.setDirection(Direction.CURRENT_POINT);
+                        return  true;
+
+
+                    }
+                    if (!world.isVisible(enemy.getVisionRange(), enemy.getX(), enemy.getY(), self.getStance(), self.getX(), self.getY(), TrooperStance.PRONE) &&
+                            (world.isVisible(self.getVisionRange(), self.getX(), self.getY(), TrooperStance.PRONE, enemy.getX(), enemy.getY(), enemy.getStance()))) {
+                        move.setAction(ActionType.LOWER_STANCE);
+                        move.setDirection(Direction.CURRENT_POINT);
+                        return  true;
+
+                    }
                 }
+
+
             }
-        }
+
+        }   */
+
 
         return false;
 
@@ -239,7 +257,59 @@ public class ActionHelper {
         return false;
     }
 
-    public static boolean isNeedToChangeState() {
+    public static boolean isNeedToChangeState(Game game, World world, Trooper self, Move move) {
+
+
+        if (self.getActionPoints() >= game.getStanceChangeCost()) {
+            for (Trooper enemy : getNearestEnemies(world)) {
+                if (isNeedAttack(game, world, self, move) && self.getStance().equals(TrooperStance.STANDING)) {
+                    if (self.getType().equals(TrooperType.SOLDIER) && isChangingStanceProper(game, world, self, move, enemy, TrooperStance.KNEELING) && (self.getActionPoints() == self.getInitialActionPoints())) {                //if after lowering stance our damage will increase
+                         move.setAction(ActionType.LOWER_STANCE);
+                        move.setDirection(Direction.CURRENT_POINT);
+                        return true;
+                    }
+
+
+                }
+                if (isNeedAttack(game, world, self, move) && self.getStance().equals(TrooperStance.KNEELING) && (self.getActionPoints() == self.getInitialActionPoints()))
+                {
+                    //if after lowering stance our damage will increase
+                    if (self.getType().equals(TrooperType.SOLDIER) && isChangingStanceProper(game, world, self, move, enemy, TrooperStance.PRONE)) {
+                        move.setAction(ActionType.LOWER_STANCE);
+                        move.setDirection(Direction.CURRENT_POINT);
+                        return true;
+                    }
+
+
+                }
+
+                if (!(world.isVisible(self.getVisionRange(), self.getX(), self.getY(), self.getStance(), enemy.getX(), enemy.getY(), enemy.getStance()) &&          //If enemy can see us but we cant
+                        world.isVisible(enemy.getVisionRange(), enemy.getX(), enemy.getY(), enemy.getStance(), self.getX(), self.getY(), self.getStance())) &&
+                        self.getVisionRange() >= enemy.getVisionRange()) {
+
+                    if (world.isVisible(self.getVisionRange(), self.getX(), self.getY(), TrooperStance.KNEELING, enemy.getX(), enemy.getY(), enemy.getStance()) && self.getStance().equals(TrooperStance.PRONE)) {
+                        move.setAction(ActionType.RAISE_STANCE);
+                        move.setDirection(Direction.CURRENT_POINT);
+                        return true;
+                    }
+
+                    if (world.isVisible(self.getVisionRange(), self.getX(), self.getY(), TrooperStance.STANDING, enemy.getX(), enemy.getY(), enemy.getStance()) && self.getStance().equals(TrooperStance.KNEELING)) {    //If enemy can see us but we cant
+                        move.setAction(ActionType.RAISE_STANCE);
+                        move.setDirection(Direction.CURRENT_POINT);
+                        return true;
+                    }
+
+                    return true;
+                }
+            }
+             if(getNearestEnemies(world).isEmpty()&& !self.getStance().equals(TrooperStance.STANDING)){
+                 move.setAction(ActionType.RAISE_STANCE);
+                 move.setDirection(Direction.CURRENT_POINT);
+                 return true;
+             }
+        }
+
+
         return false;
     }
 
@@ -248,10 +318,23 @@ public class ActionHelper {
         return false;
 
     }
+
     public static boolean isNeedGetBack() {
         return false;
 
 
+    }
+
+
+    private static boolean isChangingStanceProper(Game game, World world, Trooper self, Move move, Trooper enemy, TrooperStance stance) {
+
+
+        if (world.isVisible(self.getVisionRange(), self.getX(), self.getY(), stance, enemy.getX(), enemy.getY(), enemy.getStance())) {
+            return true;
+        }
+
+
+        return true;
     }
 
 }

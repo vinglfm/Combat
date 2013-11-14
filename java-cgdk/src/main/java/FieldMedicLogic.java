@@ -11,6 +11,12 @@ public final class FieldMedicLogic extends BaseLogic {
         if(ActionHelper.isShotWillDeny(game, world,self,move)){
             return;
         }
+        else if(ActionHelper.isNeedToHide(game,world,self,move)){
+            return;
+        }
+        else if(ActionHelper.isNeedToChangeState(game,world,self,move)){
+            return;
+        }
         else if (ActionHelper.isNeedTreatment(game, world, self, move)) {
             return;
         }
