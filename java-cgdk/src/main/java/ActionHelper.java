@@ -5,8 +5,8 @@ import java.util.*;
 /**
  * (c) Author LostSoul
  */
-public class ActionHelper {
-    private final static int ACTION_BONUS_FROM_GENDER = 3;
+public class ActionHelper extends BaseActionHelper{
+
 
     static public boolean isNeedHeal(Game game, World world, Trooper self, Move move) {
 
@@ -160,41 +160,11 @@ public class ActionHelper {
         return false;
     }
 
-    private static List<Trooper> getNearestEnemies(World world) {
-        List<Trooper> enemyList = new ArrayList<>();
-        for (Trooper trooper : world.getTroopers()) {
-            if (!trooper.isTeammate()) {
-                enemyList.add(trooper);
-            }
-        }
-        return enemyList;
-    }
 
 
-    private static boolean canAttack(Trooper self, Trooper enemy, World world) {
-
-        if (world.isVisible(self.getVisionRange(), self.getX(), self.getY(), self.getStance(), enemy.getX(), enemy.getY(), enemy.getStance())
-                && self.getDistanceTo(enemy) < self.getShootingRange()) {
-            return true;
-        }
-
-        return false;
-
-    }
 
 
-    private static boolean isNeedEat(Game game, World world, Trooper self, Move move) {
-        if (self.isHoldingFieldRation() && self.getActionPoints() > game.getFieldRationEatCost()) {
-            if (self.getActionPoints() < self.getInitialActionPoints()) {
-                move.setAction(ActionType.EAT_FIELD_RATION);
-                move.setDirection(Direction.CURRENT_POINT);
-                 return true;
-            }
 
-
-        }
-        return false;
-    }
 
     public static int getMoveCost(TrooperStance trooperStance, Game game) {
         int moveCost = -1;
@@ -217,9 +187,6 @@ public class ActionHelper {
     }
 
 
-    private static void updateExtremePath(int destinationX, int destinationY) {
-        SquardController.setFightGoalLocation(destinationX, destinationY);
-    }
 
     public static boolean isNeedToHide(Game game, World world, Trooper self, Move move) {
        /* if (self.getActionPoints() >= game.getStanceChangeCost()) {                                 //TODO worked incorrect
@@ -326,15 +293,6 @@ public class ActionHelper {
     }
 
 
-    private static boolean isChangingStanceProper(Game game, World world, Trooper self, Move move, Trooper enemy, TrooperStance stance) {
 
-
-        if (world.isVisible(self.getVisionRange(), self.getX(), self.getY(), stance, enemy.getX(), enemy.getY(), enemy.getStance())) {
-            return true;
-        }
-
-
-        return true;
-    }
 
 }
