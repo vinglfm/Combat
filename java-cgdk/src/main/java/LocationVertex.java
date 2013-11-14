@@ -17,7 +17,21 @@ public class LocationVertex {
 		this.nearests = new ArrayList<>();
 	}
 
-	/**
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null)
+            return false;
+        if(obj == this)
+            return true;
+        if(!(obj instanceof LocationVertex))
+            return false;
+
+        LocationVertex other = (LocationVertex) obj;
+        return xCord == other.getXCord() && yCord == other.getYCord();
+    }
+
+    /**
 	 * @param vertex
 	 *            nearest vertex to add
 	 * @throws IllegalArgumentException

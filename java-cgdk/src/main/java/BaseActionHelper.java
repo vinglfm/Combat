@@ -29,9 +29,6 @@ public class BaseActionHelper {
         }
         return false;
     }
-    protected static void updateExtremePath(int destinationX, int destinationY) {
-        SquardController.setFightGoalLocation(destinationX, destinationY);
-    }
 
     protected static boolean isChangingStanceProper(Game game, World world, Trooper self, Move move, Trooper enemy, TrooperStance stance) {
 

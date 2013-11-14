@@ -25,7 +25,7 @@ abstract class BaseLogic {
 
 
     protected void move(Trooper self, World world, Game game, Move move) {     //TODO temp method coz our movement should not be random!
-        Direction dir = SquardController.getDirection(self.getTeammateIndex(), self.getX(), self.getY());
+        Direction dir = SquardController.getDirection(self);
         if (dir.equals(Direction.CURRENT_POINT)) {
             if (self.getActionPoints() > game.getStanceChangeCost()) {
                 move.setAction(ActionType.LOWER_STANCE);
