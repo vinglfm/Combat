@@ -218,7 +218,7 @@ public class ActionHelper extends BaseActionHelper {
 
             for (Bonus bonus : world.getBonuses()) {
                 if (bonus.getDistanceTo(self) < 2 && !isHoldingBonus(self,bonus)) {
-                    if ((self.getX() + 1 == bonus.getX() && self.getY() == bonus.getY())  ) {
+                    if ((self.getX() + 1 == bonus.getX() && self.getY() == bonus.getY()) && !isHoldingBonus(self,bonus) ) {
 
                         move.setAction(ActionType.MOVE);
                         move.setX(bonus.getX());
