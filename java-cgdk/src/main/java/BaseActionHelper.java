@@ -7,6 +7,8 @@ import java.util.List;
  * (c) Author LostSoul
  */
 public class BaseActionHelper {
+    protected static int MAIN_ENEMY_ID = -1;
+
     protected static boolean canAttack(Trooper self, Trooper enemy, World world) {
 
         if (world.isVisible(self.getVisionRange(), self.getX(), self.getY(), self.getStance(), enemy.getX(), enemy.getY(), enemy.getStance())
@@ -52,22 +54,29 @@ public class BaseActionHelper {
         return enemyList;
     }
 
-    protected static boolean isHoldingBonus(Trooper self, Bonus bonus){
-        if (bonus.getType().equals(BonusType.FIELD_RATION) && self.isHoldingFieldRation()){
+    protected static boolean isHoldingBonus(Trooper self, Bonus bonus) {
+        if (bonus.getType().equals(BonusType.FIELD_RATION) && self.isHoldingFieldRation()) {
             return true;
 
-        }
-        else  if (bonus.getType().equals(BonusType.MEDIKIT) && self.isHoldingMedikit()){
+        } else if (bonus.getType().equals(BonusType.MEDIKIT) && self.isHoldingMedikit()) {
             return true;
 
-        }
-        else if (bonus.getType().equals(BonusType.GRENADE) && self.isHoldingGrenade()){
+        } else if (bonus.getType().equals(BonusType.GRENADE) && self.isHoldingGrenade()) {
             return true;
 
         }
         return false;
 
 
-
     }
+
+//    protected Trooper getMainEnemy(Game game, World world, Trooper self, Move move) {
+//        if (MAIN_ENEMY_ID > 0) {
+//            for (Trooper trooper : getNearestEnemies()) {
+//                if(trooper.getI)
+//            }
+//
+//        }
+//
+//    }
 }

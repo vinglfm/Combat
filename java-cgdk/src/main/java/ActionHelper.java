@@ -256,7 +256,7 @@ public class ActionHelper extends BaseActionHelper {
 
         if (self.getActionPoints() >= game.getStanceChangeCost()) {
             for (Trooper enemy : getNearestEnemies(world)) {
-                if (isNeedAttack(game, world, self, move) && self.getStance().equals(TrooperStance.STANDING)) {
+                if (isNeedAttack(game, world, self, move) && self.getStance().equals(TrooperStance.STANDING) && !isNeedThrowGrenade(game,world,self,move,enemy)) {
                     if (self.getType().equals(TrooperType.SOLDIER) && isChangingStanceProper(game, world, self, move, enemy, TrooperStance.KNEELING) && (self.getActionPoints() == self.getInitialActionPoints())) {                //if after lowering stance our damage will increase
                         move.setAction(ActionType.LOWER_STANCE);
                         move.setDirection(Direction.CURRENT_POINT);
@@ -265,7 +265,7 @@ public class ActionHelper extends BaseActionHelper {
 
 
                 }
-                if (isNeedAttack(game, world, self, move) && self.getStance().equals(TrooperStance.KNEELING) && (self.getActionPoints() == self.getInitialActionPoints())) {
+                if (isNeedAttack(game, world, self, move) && self.getStance().equals(TrooperStance.KNEELING) && (self.getActionPoints() == self.getInitialActionPoints()&& !isNeedThrowGrenade(game,world,self,move,enemy))) {
                     //if after lowering stance our damage will increase
                     if (self.getType().equals(TrooperType.SOLDIER) && isChangingStanceProper(game, world, self, move, enemy, TrooperStance.PRONE)) {
                         move.setAction(ActionType.LOWER_STANCE);
@@ -292,7 +292,7 @@ public class ActionHelper extends BaseActionHelper {
                         return true;
                     }
 
-                    return true;
+                    return false;
                 }
             }
             if (getNearestEnemies(world).isEmpty() && !self.getStance().equals(TrooperStance.STANDING)) {
