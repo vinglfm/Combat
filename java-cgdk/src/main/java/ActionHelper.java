@@ -86,18 +86,8 @@ public class ActionHelper extends BaseActionHelper {
             return true;
         }
         if (self.getActionPoints() >= self.getShootCost()) {
-            Trooper weakestEnemy = null;
-            for (Trooper enemy : getNearestEnemies(world)) {
+            Trooper weakestEnemy = getMainEnemy(game,world,self,move);
 
-                if (canAttack(self, enemy, world)) {
-                    if (weakestEnemy == null) {
-                        weakestEnemy = enemy;
-                    }
-                    if (weakestEnemy.getHitpoints() > enemy.getHitpoints()) {
-                        weakestEnemy = enemy;
-                    }
-                }
-            }
 
             if (weakestEnemy != null) {
                 if (isNeedThrowGrenade(game, world, self, move, weakestEnemy)) {
@@ -119,19 +109,7 @@ public class ActionHelper extends BaseActionHelper {
     }
 
 
-    static public boolean isShotWillDeny(Game game, World world, Trooper self, Move move) {
-        if (self.getActionPoints() >= self.getShootCost())
-            for (Trooper enemy : getNearestEnemies(world)) {
-                if (enemy.getHitpoints() < self.getDamage() && canAttack(self, enemy, world)) {
-                    move.setAction(ActionType.SHOOT);
-                    move.setX(enemy.getX());
-                    move.setY(enemy.getY());
-                    return true;
-                }
-            }
 
-        return false;
-    }
 
     public static boolean isNeedThrowGrenade(Game game, World world, Trooper self, Move move, Trooper enemy) {
         if (self.getActionPoints() >= game.getGrenadeThrowCost()) {

@@ -7,12 +7,12 @@ import java.util.List;
  * (c) Author LostSoul
  */
 public class BaseActionHelper {
-    protected static int MAIN_ENEMY_ID = -1;
+    protected static long MAIN_ENEMY_ID = -1;
 
     protected static boolean canAttack(Trooper self, Trooper enemy, World world) {
 
         if (world.isVisible(self.getVisionRange(), self.getX(), self.getY(), self.getStance(), enemy.getX(), enemy.getY(), enemy.getStance())
-                && self.getDistanceTo(enemy) < self.getShootingRange()) {
+                && self.getDistanceTo(enemy) <= self.getShootingRange()) {
             return true;
         }
 
@@ -70,13 +70,51 @@ public class BaseActionHelper {
 
     }
 
-//    protected Trooper getMainEnemy(Game game, World world, Trooper self, Move move) {
-//        if (MAIN_ENEMY_ID > 0) {
-//            for (Trooper trooper : getNearestEnemies()) {
-//                if(trooper.getI)
-//            }
-//
-//        }
-//
-//    }
+    static public boolean isShotWillDeny(Game game, World world, Trooper self, Move move) {
+        if (self.getActionPoints() >= self.getShootCost())
+            for (Trooper enemy : getNearestEnemies(world)) {
+                if (enemy.getHitpoints() < self.getDamage() && canAttack(self, enemy, world)) {
+                    move.setAction(ActionType.SHOOT);
+                    move.setX(enemy.getX());
+                    move.setY(enemy.getY());
+                    return true;
+                }
+            }
+
+        return false;
+    }
+
+    protected static Trooper getMainEnemy(Game game, World world, Trooper self, Move move) {
+        Trooper mainTarget = null;
+
+        for (Trooper trooper : getNearestEnemies(world)) {
+            if (isShotWillDeny(game, world, self, move)) {
+
+                return trooper;
+
+
+            } else if (trooper.getId() == MAIN_ENEMY_ID && trooper.getHitpoints() > 0) {
+                if (canAttack(self, trooper, world)) {
+                    MAIN_ENEMY_ID = trooper.getId();
+                    return trooper;
+                }
+
+            } else if (canAttack(self, trooper, world)) {
+
+                if (mainTarget == null) {
+                    mainTarget = trooper;
+                }
+                if (mainTarget.getHitpoints() > trooper.getHitpoints()) {
+
+                    mainTarget = trooper;
+                }
+
+
+            }
+
+        }
+
+
+        return mainTarget;
+    }
 }
