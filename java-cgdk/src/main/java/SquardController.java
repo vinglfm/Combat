@@ -6,17 +6,20 @@ import model.World;
 import java.util.*;
 
 public class SquardController {
+    private static int INITIAL_TROOPER_SIZE = 3;
+    private static int POSSIBLE_CONSEQUENCE_SINGLE_MOVES = 12;
     private static World world;
     private static MovementHelper movementHelper;
-
     //LOTS OF SPIKES...;)
     private static PathHelper pathToTarget;
     private static Map<Integer, PathHelper> pathesToCurrentPosition = new HashMap<>();
     private static Queue<LocationVertex> freeCliches = new ArrayDeque<>();
     private static List<Integer> calculated = new ArrayList<>();
     private static int troopsToReach = 0;
-    private static int gap = 0;
-    private static int duration = 4;
+    private static Map<Integer, Integer> aliveTroopers = new HashMap<>();
+    private static Integer prevTrooperIndex = -1;
+    private static boolean isInit = true;
+    private static int singleCallTimes = 0;
 
     public static void init(World curWorld) {
         if (world == null) {
@@ -28,6 +31,7 @@ public class SquardController {
     }
 
     public static Direction getDirection(Trooper forTrooper) {
+        trackAlive(forTrooper.getTeammateIndex());
 
         if (pathToTarget == null) {
             pathToTarget = new PathHelper(movementHelper.updatePath(
@@ -48,13 +52,47 @@ public class SquardController {
         return directionToNextPoint(forTrooper);
     }
 
+    private static void trackAlive(Integer trooperIndex) {
+        if (aliveTroopers.get(trooperIndex) == null) {
+            aliveTroopers.put(trooperIndex, 0);
+        }
+
+        ++singleCallTimes;
+        if (prevTrooperIndex != trooperIndex ||  singleCallTimes > POSSIBLE_CONSEQUENCE_SINGLE_MOVES) {
+            prevTrooperIndex = trooperIndex;
+            aliveTroopers.put(prevTrooperIndex, aliveTroopers.get(prevTrooperIndex) + 1);
+            singleCallTimes = 0;
+            removeIfDead();
+        }
+    }
+
+    private static void removeIfDead() {
+        Collection<Integer> values = aliveTroopers.values();
+        Integer max = Collections.max(values);
+        Integer min = Collections.min(values);
+        if(max - min > 1) {
+            List<Integer> keysToRemove = new LinkedList<>();
+            for (Integer key : aliveTroopers.keySet())  {
+                if (aliveTroopers.get(key).equals(min)) {
+                    keysToRemove.add(key);
+                }
+            }
+
+            for(Integer key : keysToRemove) {
+                aliveTroopers.remove(key);
+                --troopsToReach;
+            }
+        }
+    }
+
     private static Direction directionToNextPoint(Trooper forTrooper) {
         PathHelper pathHelper = pathesToCurrentPosition.get(forTrooper.getTeammateIndex());
         if (pathHelper == null && !calculated.contains(forTrooper.getTeammateIndex())) {
 
             if (freeCliches.isEmpty()) {
                 freeCliches = freeLocations(pathToTarget.getCurrentLocation());
-                troopsToReach = freeCliches.size() - gap;
+                troopsToReach = isInit ? INITIAL_TROOPER_SIZE : aliveTroopers.size();
+                isInit = false;
             }
 
             List<LocationVertex> path = movementHelper.pathTo(forTrooper.getX(), forTrooper.getY(),
@@ -63,19 +101,13 @@ public class SquardController {
             pathesToCurrentPosition.put(forTrooper.getTeammateIndex(), pathHelper);
             calculated.add(forTrooper.getTeammateIndex());
         }
-        if(pathHelper == null) {
-            --duration;
-            if(duration == 0) {
-                duration = 4;
-                ++gap;
-            }
+        if (pathHelper == null) {
             return Direction.CURRENT_POINT;
         }
 
         if (pathHelper.isTargetLocationAchieved()) {
             pathesToCurrentPosition.remove(forTrooper.getTeammateIndex());
             --troopsToReach;
-//            freeCliches.remove(pathHelper.getCurrentLocation());
             if (troopsToReach < 2) { //TODO:temprorary changed from 1 to 2... think what positions should be returned
                 pathToTarget.moveCurrentPosition();
                 calculated.clear();
